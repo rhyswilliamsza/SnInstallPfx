@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -44,7 +45,8 @@ namespace SnInstallPfx
             }
 
             // open pfx and export its private key
-            var pfxCert = new X509Certificate2(pfxPath, pfxPassword, X509KeyStorageFlags.Exportable);
+            var certBytes = File.ReadAllBytes(pfxPath);
+            var pfxCert = new X509Certificate2(certBytes, pfxPassword, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
             var pfxPrivateKey = pfxCert.PrivateKey as RSACryptoServiceProvider;
             var pfxCspBlob = pfxPrivateKey.ExportCspBlob(true);
 
